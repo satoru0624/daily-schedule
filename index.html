@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#24364B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="今日の予定">
+
+<title>今日のスケジュール</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  background:#f4f6f8;
+  color:#1f2937;
+  font-family:-apple-system,BlinkMacSystemFont,
+  "Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+}
+
+header{
+  background:#24364b;
+  color:white;
+  padding:25px 16px 18px;
+}
+
+header h1{
+  margin:0;
+  font-size:25px;
+}
+
+#date{
+  margin-top:5px;
+  font-size:14px;
+  opacity:.8;
+}
+
+main{
+  max-width:700px;
+  margin:auto;
+  padding:14px;
+}
+
+.card{
+  background:white;
+  padding:15px;
+  margin-bottom:13px;
+  border-radius:16px;
+  box-shadow:0 3px 14px rgba(0,0,0,.07);
+}
+
+h2{
+  margin:0 0 12px;
+  font-size:17px;
+}
+
+.topItem{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  border:1px solid #d7dee7;
+  padding:10px;
+  border-radius:11px;
+  margin-bottom:8px;
+}
+
+.topItem input[type="checkbox"]{
+  width:22px;
+  height:22px;
+}
+
+.topItem input[type="text"]{
+  flex:1;
+  border:none;
+  outline:none;
+  font-size:16px;
+}
+
+.done{
+  opacity:.55;
+  text-decoration:line-through;
+}
+
+button{
+  border:none;
+  border-radius:10px;
+  padding:10px 13px;
+  font-weight:bold;
+}
+
+.addButton{
+  background:#24364b;
+  color:white;
+  width:100%;
+  font-size:16px;
+  margin-bottom:12px;
+}
+
+.task{
+  display:grid;
+  grid-template-columns:42px 1fr;
+  gap:9px;
+  padding:11px;
+  border:1px solid #d7dee7;
+  border-radius:13px;
+  margin-bottom:9px;
+}
+
+.checkButton{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:2px solid #9ca8b6;
+  background:white;
+}
+
+.task.completed .checkButton{
+  background:#24364b;
+  color:white;
+}
+
+.task.completed .taskTitle{
+  text-decoration:line-through;
+  opacity:.5;
+}
+
+.taskTime{
+  font-weight:bold;
+  color:#24364b;
+  margin-right:8px;
+}
+
+.taskTitle{
+  font-weight:bold;
+}
+
+.taskNote{
+  margin-top:5px;
+  font-size:13px;
+  color:#6b7280;
+}
+
+.taskButtons{
+  margin-top:8px;
+}
+
+.taskButtons button{
+  padding:6px 9px;
+  margin-right:5px;
+  background:#eef1f5;
+}
+
+.delete{
+  color:#b42318;
+}
+
+textarea{
+  width:100%;
+  min-height:120px;
+  resize:vertical;
+  border:1px solid #d7dee7;
+  border-radius:11px;
+  padding:11px;
+  font-size:16px;
+}
+
+dialog{
+  width:calc(100% - 30px);
+  max-width:500px;
+  border:none;
+  border-radius:16px;
+  padding:18px;
+}
+
+dialog::backdrop{
+  background:rgba(0,0,0,.45);
+}
+
+dialog input,
+dialog textarea{
+  width:100%;
+  margin:6px 0 12px;
+  padding:10px;
+  border:1px solid #d7dee7;
+  border-radius:9px;
+}
+
+dialog textarea{
+  min-height:80px;
+}
+
+.dialogButtons{
+  display:flex;
+  gap:8px;
+  justify-content:flex-end;
+}
+
+.save{
+  background:#24364b;
+  color:white;
+}
+
+.cancel{
+  background:#eef1f5;
+}
+
+.reset{
+  background:#eef1f5;
+  color:#333;
+  width:100%;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>今日のスケジュール</h1>
+<div id="date"></div>
+</header>
+
+<main>
+
+<div class="card">
+
+<h2>★ 今日絶対にやること TOP 3</h2>
+
+<div class="topItem">
+<input type="checkbox" class="topCheck">
+<input type="text" class="topText" placeholder="1. 今日必ずやること">
+</div>
+
+<div class="topItem">
+<input type="checkbox" class="topCheck">
+<input type="text" class="topText" placeholder="2. 今日必ずやること">
+</div>
+
+<div class="topItem">
+<input type="checkbox" class="topCheck">
+<input type="text" class="topText" placeholder="3. 今日必ずやること">
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>時間別スケジュール</h2>
+
+<button class="addButton" onclick="openTask()">＋ 予定を追加</button>
+
+<div id="taskList"></div>
+
+</div>
+
+
+<div class="card">
+
+<h2>📝 メモ・備忘録</h2>
+
+<textarea
+id="memo"
+placeholder="忘れたくないこと、買う物、電話する相手など">
+</textarea>
+
+</div>
+
+
+<div class="card">
+
+<h2>→ 明日やること・持ち越し</h2>
+
+<textarea
+id="tomorrow"
+placeholder="明日に回すこと">
+</textarea>
+
+</div>
+
+
+<div class="card">
+
+<button class="reset" onclick="resetDay()">
+今日の内容をリセット
+</button>
+
+</div>
+
+</main>
+
+
+<dialog id="taskDialog">
+
+<h2 id="dialogTitle">予定を追加</h2>
+
+<input type="hidden" id="editId">
+
+<label>時間</label>
+<input type="time" id="taskTime">
+
+<label>やること</label>
+<input
+type="text"
+id="taskTitle"
+placeholder="例：役所に電話">
+
+<label>備考</label>
+<textarea
+id="taskNote"
+placeholder="場所、持ち物、補足など">
+</textarea>
+
+<div class="dialogButtons">
+
+<button
+class="cancel"
+onclick="closeTask()">
+キャンセル
+</button>
+
+<button
+class="save"
+onclick="saveTask()">
+保存
+</button>
+
+</div>
+
+</dialog>
+
+
+<script>
+
+const STORAGE_KEY="dailyScheduleApp";
+
+let data={
+top:["","",""],
+topDone:[false,false,false],
+tasks:[],
+memo:"",
+tomorrow:""
+};
+
+function loadData(){
+
+const saved=localStorage.getItem(STORAGE_KEY);
+
+if(saved){
+
+try{
+data=JSON.parse(saved);
+}catch(e){}
+
+}
+
+}
+
+function saveData(){
+
+localStorage.setItem(
+STORAGE_KEY,
+JSON.stringify(data)
+);
+
+}
+
+
+const date=new Date();
+
+document.getElementById("date").textContent=
+date.toLocaleDateString(
+"ja-JP",
+{
+year:"numeric",
+month:"long",
+day:"numeric",
+weekday:"short"
+}
+);
+
+
+const topTexts=
+document.querySelectorAll(".topText");
+
+const topChecks=
+document.querySelectorAll(".topCheck");
+
+
+function renderTop(){
+
+topTexts.forEach((input,i)=>{
+
+input.value=data.top[i]||"";
+
+topChecks[i].checked=
+data.topDone[i]||false;
+
+input.parentElement.classList.toggle(
+"done",
+data.topDone[i]
+);
+
+});
+
+}
+
+
+topTexts.forEach((input,i)=>{
+
+input.addEventListener(
+"input",
+()=>{
+
+data.top[i]=input.value;
+
+saveData();
+
+}
+);
+
+});
+
+
+topChecks.forEach((check,i)=>{
+
+check.addEventListener(
+"change",
+()=>{
+
+data.topDone[i]=check.checked;
+
+saveData();
+
+renderTop();
+
+}
+);
+
+});
+
+
+function openTask(){
+
+document.getElementById("dialogTitle")
+.textContent="予定を追加";
+
+document.getElementById("editId").value="";
+
+document.getElementById("taskTime").value="09:00";
+
+document.getElementById("taskTitle").value="";
+
+document.getElementById("taskNote").value="";
+
+document.getElementById("taskDialog")
+.showModal();
+
+}
+
+
+function closeTask(){
+
+document.getElementById("taskDialog")
+.close();
+
+}
+
+
+function saveTask(){
+
+const id=
+document.getElementById("editId").value;
+
+const time=
+document.getElementById("taskTime").value;
+
+const title=
+document.getElementById("taskTitle")
+.value.trim();
+
+const note=
+document.getElementById("taskNote")
+.value.trim();
+
+
+if(!title){
+
+alert("やることを入力してください");
+
+return;
+
+}
+
+
+if(id){
+
+const task=
+data.tasks.find(
+t=>String(t.id)===String(id)
+);
+
+if(task){
+
+task.time=time;
+
+task.title=title;
+
+task.note=note;
+
+}
+
+}else{
+
+data.tasks.push({
+
+id:Date.now(),
+
+time:time,
+
+title:title,
+
+note:note,
+
+done:false
+
+});
+
+}
+
+saveData();
+
+renderTasks();
+
+closeTask();
+
+}
+
+
+function renderTasks(){
+
+const list=
+document.getElementById("taskList");
+
+list.innerHTML="";
+
+
+data.tasks
+.sort(
+(a,b)=>a.time.localeCompare(b.time)
+)
+.forEach(task=>{
+
+const div=
+document.createElement("div");
+
+div.className=
+"task"+
+(task.done?" completed":"");
+
+
+const check=
+document.createElement("button");
+
+check.className="checkButton";
+
+check.textContent=
+task.done?"✓":"";
+
+check.onclick=()=>{
+
+task.done=!task.done;
+
+saveData();
+
+renderTasks();
+
+};
+
+
+const content=
+document.createElement("div");
+
+
+const head=
+document.createElement("div");
+
+
+const time=
+document.createElement("span");
+
+time.className="taskTime";
+
+time.textContent=task.time;
+
+
+const title=
+document.createElement("span");
+
+title.className="taskTitle";
+
+title.textContent=task.title;
+
+
+head.appendChild(time);
+
+head.appendChild(title);
+
+
+const note=
+document.createElement("div");
+
+note.className="taskNote";
+
+note.textContent=
+task.note||"";
+
+
+const buttons=
+document.createElement("div");
+
+buttons.className=
+"taskButtons";
+
+
+const edit=
+document.createElement("button");
+
+edit.textContent="編集";
+
+edit.onclick=()=>{
+
+document.getElementById("dialogTitle")
+.textContent="予定を編集";
+
+document.getElementById("editId")
+.value=task.id;
+
+document.getElementById("taskTime")
+.value=task.time;
+
+document.getElementById("taskTitle")
+.value=task.title;
+
+document.getElementById("taskNote")
+.value=task.note||"";
+
+document.getElementById("taskDialog")
+.showModal();
+
+};
+
+
+const del=
+document.createElement("button");
+
+del.textContent="削除";
+
+del.className="delete";
+
+del.onclick=()=>{
+
+if(
+confirm(
+"この予定を削除しますか？"
+)
+){
+
+data.tasks=
+data.tasks.filter(
+t=>t.id!==task.id
+);
+
+saveData();
+
+renderTasks();
+
+}
+
+};
+
+
+buttons.appendChild(edit);
+
+buttons.appendChild(del);
+
+
+content.appendChild(head);
+
+content.appendChild(note);
+
+content.appendChild(buttons);
+
+
+div.appendChild(check);
+
+div.appendChild(content);
+
+list.appendChild(div);
+
+});
+
+}
+
+
+const memo=
+document.getElementById("memo");
+
+const tomorrow=
+document.getElementById("tomorrow");
+
+
+memo.addEventListener(
+"input",
+()=>{
+
+data.memo=memo.value;
+
+saveData();
+
+}
+);
+
+
+tomorrow.addEventListener(
+"input",
+()=>{
+
+data.tomorrow=
+tomorrow.value;
+
+saveData();
+
+}
+);
+
+
+function resetDay(){
+
+if(
+confirm(
+"今日の内容をすべて消しますか？"
+)
+){
+
+data={
+top:["","",""],
+topDone:[false,false,false],
+tasks:[],
+memo:"",
+tomorrow:""
+};
+
+saveData();
+
+memo.value="";
+
+tomorrow.value="";
+
+renderTop();
+
+renderTasks();
+
+}
+
+}
+
+
+loadData();
+
+renderTop();
+
+renderTasks();
+
+memo.value=data.memo||"";
+
+tomorrow.value=data.tomorrow||"";
+
+</script>
+
+</body>
+</html>
