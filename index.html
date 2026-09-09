@@ -7,273 +7,494 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="予定管理">
+
 <title>スケジュール管理</title>
 
 <style>
 *{box-sizing:border-box}
+
 :root{
-  --navy:#24364b;
-  --navy2:#304c69;
-  --bg:#f4f6f8;
-  --card:#fff;
-  --line:#d7dee7;
-  --text:#1f2937;
-  --muted:#6b7280;
-  --light:#eef2f6;
-  --danger:#b42318;
+--navy:#24364b;
+--navy2:#365777;
+--bg:#f3f6f8;
+--card:#fff;
+--line:#d7dee7;
+--text:#1f2937;
+--muted:#6b7280;
+--light:#eef2f6;
+--danger:#b42318;
+--warn:#fff4cc;
 }
+
 body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,
-  "Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+margin:0;
+background:var(--bg);
+color:var(--text);
+font-family:-apple-system,BlinkMacSystemFont,
+"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
 }
-button,input,textarea{font:inherit}
-button{cursor:pointer}
+
+button,input,textarea,select{
+font:inherit;
+}
+
+button{
+cursor:pointer;
+}
 
 header{
-  position:sticky;
-  top:0;
-  z-index:20;
-  color:#fff;
-  background:linear-gradient(180deg,var(--navy),var(--navy2));
-  padding:calc(15px + env(safe-area-inset-top)) 14px 15px;
-  box-shadow:0 3px 16px rgba(0,0,0,.15);
+position:sticky;
+top:0;
+z-index:30;
+color:#fff;
+background:linear-gradient(180deg,var(--navy),var(--navy2));
+padding:calc(14px + env(safe-area-inset-top)) 14px 14px;
+box-shadow:0 3px 14px rgba(0,0,0,.16);
 }
+
+.headerTop{
+display:flex;
+justify-content:space-between;
+gap:10px;
+align-items:flex-start;
+}
+
 header h1{
-  margin:0 0 4px;
-  font-size:25px;
+margin:0;
+font-size:24px;
 }
+
 .dateText{
-  font-size:14px;
-  opacity:.85;
+font-size:13px;
+margin-top:4px;
+opacity:.82;
 }
-.dateNav{
-  display:grid;
-  grid-template-columns:auto 1fr auto;
-  gap:8px;
-  align-items:center;
-  margin-top:13px;
+
+.navRow{
+display:grid;
+grid-template-columns:72px 1fr 72px;
+gap:8px;
+margin-top:12px;
 }
-.dateNav button{
-  border:0;
-  color:#fff;
-  background:rgba(255,255,255,.14);
-  border-radius:11px;
-  padding:10px 13px;
-  font-weight:700;
+
+.navRow button{
+border:0;
+border-radius:11px;
+background:rgba(255,255,255,.15);
+color:#fff;
+font-weight:800;
+padding:10px 5px;
 }
-.dateNav input{
-  width:100%;
-  border:0;
-  border-radius:11px;
-  padding:10px;
-  text-align:center;
+
+.navRow input{
+width:100%;
+min-width:0;
+border:0;
+border-radius:11px;
+padding:10px 4px;
+text-align:center;
+background:#fff;
+color:#111827;
 }
 
 main{
-  max-width:760px;
-  margin:auto;
-  padding:13px 12px calc(30px + env(safe-area-inset-bottom));
+max-width:760px;
+margin:auto;
+padding:12px 11px calc(35px + env(safe-area-inset-bottom));
 }
-.card{
-  background:var(--card);
-  border-radius:17px;
-  padding:15px;
-  margin-bottom:12px;
-  box-shadow:0 4px 16px rgba(30,45,60,.06);
-}
-.card h2{
-  margin:0 0 12px;
-  font-size:17px;
-}
-.sectionHead{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:8px;
-  margin-bottom:12px;
-}
-.sectionHead h2{margin:0}
 
-.todayBtn,.primary,.secondary,.danger{
-  border:0;
-  border-radius:10px;
-  padding:10px 12px;
-  font-weight:700;
+.card{
+background:var(--card);
+border-radius:18px;
+padding:15px;
+margin-bottom:12px;
+box-shadow:0 4px 16px rgba(30,45,60,.06);
 }
-.primary{
-  color:#fff;
-  background:var(--navy);
+
+.sectionHead{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:8px;
+margin-bottom:11px;
 }
-.secondary{
-  color:var(--text);
-  background:var(--light);
+
+h2{
+margin:0;
+font-size:17px;
 }
+
+.primary,
+.secondary,
 .danger{
-  color:var(--danger);
-  background:#fdecec;
+border:0;
+border-radius:10px;
+padding:10px 12px;
+font-weight:800;
+}
+
+.primary{
+background:var(--navy);
+color:#fff;
+}
+
+.secondary{
+background:var(--light);
+color:var(--text);
+}
+
+.danger{
+background:#fdecec;
+color:var(--danger);
 }
 
 .topItem{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:10px;
-  margin-bottom:8px;
+display:flex;
+align-items:center;
+gap:10px;
+border:1px solid var(--line);
+border-radius:12px;
+padding:10px;
+margin-bottom:8px;
 }
+
 .topItem input[type=checkbox]{
-  width:23px;
-  height:23px;
+width:23px;
+height:23px;
 }
+
 .topItem input[type=text]{
-  flex:1;
-  border:0;
-  outline:0;
-  font-size:16px;
-  background:transparent;
+flex:1;
+border:0;
+outline:0;
+background:transparent;
+font-size:16px;
 }
+
 .topItem.done input[type=text]{
-  color:var(--muted);
-  text-decoration:line-through;
+text-decoration:line-through;
+color:var(--muted);
 }
+
+/* カレンダー */
+
+.calendarControls{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:8px;
+margin-bottom:10px;
+}
+
+.calendarControls button{
+border:0;
+background:var(--light);
+border-radius:9px;
+padding:8px 10px;
+font-weight:800;
+}
+
+.calendarTitle{
+font-weight:900;
+}
+
+.calendar{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+gap:4px;
+}
+
+.week{
+text-align:center;
+font-size:12px;
+font-weight:800;
+color:var(--muted);
+padding:6px 0;
+}
+
+.day{
+position:relative;
+min-height:50px;
+border:1px solid #e3e8ee;
+border-radius:9px;
+background:#fff;
+padding:5px;
+text-align:left;
+}
+
+.day.today{
+border:2px solid var(--navy);
+}
+
+.day.selected{
+background:#eaf0f6;
+}
+
+.day.other{
+opacity:.28;
+}
+
+.dayNum{
+font-weight:800;
+font-size:13px;
+}
+
+.dot{
+position:absolute;
+bottom:5px;
+left:50%;
+transform:translateX(-50%);
+width:6px;
+height:6px;
+border-radius:50%;
+background:var(--navy);
+}
+
+.importantDot{
+background:#b42318;
+}
+
+/* filter */
+
+.filters{
+display:flex;
+gap:7px;
+flex-wrap:wrap;
+margin-bottom:11px;
+}
+
+.filterBtn{
+border:0;
+background:var(--light);
+border-radius:999px;
+padding:8px 11px;
+font-weight:700;
+font-size:13px;
+}
+
+.filterBtn.active{
+background:var(--navy);
+color:#fff;
+}
+
+/* timeline */
 
 .timeline{
-  border-top:1px solid var(--line);
+border-top:1px solid var(--line);
 }
+
 .slot{
-  display:grid;
-  grid-template-columns:62px 1fr;
-  min-height:52px;
-  border-bottom:1px solid var(--line);
+display:grid;
+grid-template-columns:62px 1fr;
+min-height:52px;
+border-bottom:1px solid var(--line);
 }
+
 .slotTime{
-  padding:12px 8px 8px 0;
-  font-size:13px;
-  font-weight:800;
-  color:var(--muted);
+padding:12px 8px 8px 0;
+font-size:13px;
+font-weight:900;
+color:var(--muted);
+position:relative;
 }
+
 .slotBody{
-  padding:7px 0 7px 8px;
-  border-left:1px solid var(--line);
+padding:7px 0 7px 8px;
+border-left:1px solid var(--line);
 }
-.slotEmpty{
-  width:100%;
-  min-height:36px;
-  border:0;
-  background:transparent;
-  color:#9aa3ae;
-  text-align:left;
+
+.slot.current{
+background:#f2f7fb;
 }
+
+.currentBadge{
+font-size:10px;
+background:var(--navy);
+color:white;
+padding:2px 5px;
+border-radius:5px;
+margin-top:3px;
+display:inline-block;
+}
+
+.addSlot{
+width:100%;
+min-height:35px;
+border:0;
+background:transparent;
+text-align:left;
+color:#9aa3ae;
+}
+
 .task{
-  border:1px solid #cfd8e2;
-  background:#f8fafc;
-  border-radius:11px;
-  padding:9px 10px;
-  margin-bottom:6px;
+border:1px solid #cfd8e2;
+background:#f8fafc;
+border-radius:11px;
+padding:9px 10px;
+margin-bottom:7px;
 }
+
+.task.important{
+border:2px solid #d89b00;
+background:var(--warn);
+}
+
 .task.done{
-  opacity:.58;
+opacity:.55;
 }
+
 .task.done .taskTitle{
-  text-decoration:line-through;
+text-decoration:line-through;
 }
+
 .taskTop{
-  display:flex;
-  align-items:center;
-  gap:8px;
+display:flex;
+align-items:center;
+gap:8px;
 }
+
 .taskCheck{
-  width:23px;
-  height:23px;
+width:23px;
+height:23px;
 }
+
+.star{
+font-size:18px;
+}
+
 .taskTitle{
-  font-weight:800;
-  flex:1;
+font-weight:900;
+flex:1;
 }
+
+.repeatBadge{
+font-size:11px;
+background:#e7edf4;
+padding:3px 6px;
+border-radius:6px;
+}
+
 .taskNote{
-  margin:5px 0 0 31px;
-  font-size:13px;
-  color:var(--muted);
-  white-space:pre-wrap;
+margin:5px 0 0 31px;
+font-size:13px;
+color:var(--muted);
+white-space:pre-wrap;
 }
+
 .taskButtons{
-  margin:7px 0 0 31px;
-  display:flex;
-  gap:5px;
+margin:7px 0 0 31px;
+display:flex;
+gap:5px;
 }
+
 .taskButtons button{
-  border:0;
-  border-radius:7px;
-  background:#e9eef3;
-  padding:6px 9px;
-  font-size:12px;
+border:0;
+border-radius:7px;
+background:#e9eef3;
+padding:6px 9px;
+font-size:12px;
 }
-.taskButtons .delete{color:var(--danger)}
+
+.taskButtons .delete{
+color:var(--danger);
+}
 
 textarea{
-  width:100%;
-  min-height:120px;
-  border:1px solid var(--line);
-  border-radius:11px;
-  padding:11px;
-  font-size:16px;
-  resize:vertical;
+width:100%;
+min-height:115px;
+border:1px solid var(--line);
+border-radius:11px;
+padding:11px;
+font-size:16px;
+resize:vertical;
 }
 
 .grid2{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
 }
 
 .actionsBar{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-.actionsBar button{
-  flex:1;
-  min-width:150px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
 }
 
+/* dialog */
+
 dialog{
-  width:calc(100% - 28px);
-  max-width:500px;
-  border:0;
-  border-radius:17px;
-  padding:18px;
+width:calc(100% - 26px);
+max-width:500px;
+border:0;
+border-radius:17px;
+padding:18px;
 }
+
 dialog::backdrop{
-  background:rgba(0,0,0,.45);
+background:rgba(0,0,0,.45);
 }
-dialog h2{margin-top:0}
+
+dialog h2{
+margin-bottom:12px;
+}
+
 dialog label{
-  display:block;
-  font-weight:700;
-  font-size:13px;
-  margin-top:10px;
+display:block;
+font-size:13px;
+font-weight:800;
+margin-top:10px;
 }
-dialog input,dialog textarea{
-  width:100%;
-  margin-top:6px;
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:11px;
+
+dialog input,
+dialog textarea,
+dialog select{
+width:100%;
+margin-top:6px;
+border:1px solid var(--line);
+border-radius:10px;
+padding:11px;
+background:#fff;
 }
-dialog textarea{min-height:80px}
+
+dialog textarea{
+min-height:75px;
+}
+
+.checkLine{
+display:flex;
+align-items:center;
+gap:9px;
+margin-top:13px;
+font-weight:800;
+}
+
+.checkLine input{
+width:22px;
+height:22px;
+}
+
 .dialogBtns{
-  display:flex;
-  justify-content:flex-end;
-  gap:8px;
-  margin-top:15px;
+display:flex;
+justify-content:flex-end;
+gap:8px;
+margin-top:16px;
 }
 
 @media(max-width:640px){
-  .grid2{grid-template-columns:1fr}
+
+.grid2{
+grid-template-columns:1fr;
+}
+
+.actionsBar{
+grid-template-columns:1fr;
+}
+
+.day{
+min-height:46px;
+}
+
 }
 </style>
 </head>
@@ -281,478 +502,1881 @@ dialog textarea{min-height:80px}
 <body>
 
 <header>
-  <h1>スケジュール管理</h1>
-  <div id="dateText" class="dateText"></div>
 
-  <div class="dateNav">
-    <button onclick="moveDay(-1)">← 前日</button>
-    <input id="datePicker" type="date">
-    <button onclick="moveDay(1)">翌日 →</button>
-  </div>
+<div class="headerTop">
+
+<div>
+<h1>スケジュール管理</h1>
+<div id="dateText" class="dateText"></div>
+</div>
+
+<button
+class="secondary"
+onclick="goToday()">
+今日
+</button>
+
+</div>
+
+<div class="navRow">
+
+<button onclick="moveDay(-1)">
+← 前日
+</button>
+
+<input
+id="datePicker"
+type="date">
+
+<button onclick="moveDay(1)">
+翌日 →
+</button>
+
+</div>
+
 </header>
 
 <main>
 
 <section class="card">
-  <div class="sectionHead">
-    <h2>★ 今日絶対にやること TOP 3</h2>
-    <button class="secondary" onclick="goToday()">今日</button>
-  </div>
 
-  <div id="top3"></div>
+<div class="sectionHead">
+<h2>📅 カレンダー</h2>
+</div>
+
+<div class="calendarControls">
+
+<button onclick="moveMonth(-1)">
+←
+</button>
+
+<div
+id="calendarTitle"
+class="calendarTitle">
+</div>
+
+<button onclick="moveMonth(1)">
+→
+</button>
+
+</div>
+
+<div id="calendar" class="calendar"></div>
+
 </section>
+
 
 <section class="card">
-  <div class="sectionHead">
-    <h2>時間別スケジュール</h2>
-    <button class="primary" onclick="openTask()">＋ 予定追加</button>
-  </div>
 
-  <div id="timeline" class="timeline"></div>
+<h2 style="margin-bottom:12px">
+★ 今日絶対にやること TOP 3
+</h2>
+
+<div id="top3"></div>
+
 </section>
+
+
+<section class="card">
+
+<div class="sectionHead">
+
+<h2>
+時間別スケジュール
+</h2>
+
+<button
+class="primary"
+onclick="openTask()">
+＋ 予定追加
+</button>
+
+</div>
+
+<div class="filters">
+
+<button
+id="filterAll"
+class="filterBtn active"
+onclick="setFilter('all')">
+すべて
+</button>
+
+<button
+id="filterIncomplete"
+class="filterBtn"
+onclick="setFilter('incomplete')">
+未完了
+</button>
+
+<button
+id="filterImportant"
+class="filterBtn"
+onclick="setFilter('important')">
+重要
+</button>
+
+</div>
+
+<div id="timeline" class="timeline"></div>
+
+</section>
+
 
 <section class="card grid2">
-  <div>
-    <h2>📝 メモ・備忘録</h2>
-    <textarea id="memo"
-      placeholder="忘れたくないこと、買う物、電話する相手など"></textarea>
-  </div>
 
-  <div>
-    <h2>→ 翌日へ持ち越し</h2>
-    <textarea id="carry"
-      placeholder="翌日に回したいこと"></textarea>
-  </div>
+<div>
+
+<h2 style="margin-bottom:9px">
+📝 メモ・備忘録
+</h2>
+
+<textarea
+id="memo"
+placeholder="忘れたくないことなど">
+</textarea>
+
+</div>
+
+
+<div>
+
+<h2 style="margin-bottom:9px">
+→ 翌日へ持ち越し
+</h2>
+
+<textarea
+id="carry"
+placeholder="翌日に回したいこと">
+</textarea>
+
+</div>
+
 </section>
 
+
 <section class="card">
-  <div class="actionsBar">
-    <button class="primary" onclick="copyCarryToTomorrow()">
-      持ち越しを翌日にコピー
-    </button>
 
-    <button class="secondary" onclick="copyIncompleteToTomorrow()">
-      未完了予定を翌日にコピー
-    </button>
+<div class="actionsBar">
 
-    <button class="danger" onclick="resetDay()">
-      この日をリセット
-    </button>
-  </div>
+<button
+class="primary"
+onclick="copyCarryToTomorrow()">
+持ち越しを翌日へ
+</button>
+
+<button
+class="secondary"
+onclick="copyIncompleteToTomorrow()">
+未完了を翌日へ
+</button>
+
+<button
+class="danger"
+onclick="resetDay()">
+この日をリセット
+</button>
+
+</div>
+
 </section>
 
 </main>
 
+
 <dialog id="taskDialog">
-  <h2 id="dialogTitle">予定を追加</h2>
 
-  <input id="editId" type="hidden">
+<h2 id="dialogTitle">
+予定を追加
+</h2>
 
-  <label>
-    時間
-    <input id="taskTime" type="time" step="1800">
-  </label>
+<input id="editId" type="hidden">
 
-  <label>
-    やること
-    <input id="taskTitle" type="text"
-      placeholder="例：役所に電話">
-  </label>
+<label>
+時間
+<input
+id="taskTime"
+type="time"
+step="1800">
+</label>
 
-  <label>
-    備考
-    <textarea id="taskNote"
-      placeholder="場所・持ち物・補足など"></textarea>
-  </label>
+<label>
+やること
+<input
+id="taskTitle"
+type="text"
+placeholder="例：役所に電話">
+</label>
 
-  <div class="dialogBtns">
-    <button class="secondary" onclick="closeTask()">キャンセル</button>
-    <button class="primary" onclick="saveTask()">保存</button>
-  </div>
+<label>
+備考
+<textarea
+id="taskNote"
+placeholder="場所・持ち物・補足">
+</textarea>
+</label>
+
+<label>
+繰り返し
+<select id="taskRepeat">
+
+<option value="none">
+なし
+</option>
+
+<option value="daily">
+毎日
+</option>
+
+<option value="weekdays">
+平日のみ
+</option>
+
+<option value="weekly">
+毎週同じ曜日
+</option>
+
+</select>
+</label>
+
+<div class="checkLine">
+
+<input
+id="taskImportant"
+type="checkbox">
+
+<label for="taskImportant"
+style="margin:0">
+⭐ 重要な予定
+</label>
+
+</div>
+
+<div class="dialogBtns">
+
+<button
+class="secondary"
+onclick="closeTask()">
+キャンセル
+</button>
+
+<button
+class="primary"
+onclick="saveTask()">
+保存
+</button>
+
+</div>
+
 </dialog>
 
+
 <script>
-const DB_KEY="dailyScheduleV2";
-const OLD_KEY="dailyScheduleApp";
 
-function ymd(d){
-  const y=d.getFullYear();
-  const m=String(d.getMonth()+1).padStart(2,"0");
-  const day=String(d.getDate()).padStart(2,"0");
-  return `${y}-${m}-${day}`;
-}
-
-function newDay(){
-  return{
-    top:["","",""],
-    topDone:[false,false,false],
-    tasks:[],
-    memo:"",
-    carry:""
-  };
-}
+const DB_KEY="dailyScheduleV3";
+const OLD_V2="dailyScheduleV2";
 
 let db={};
 let selectedDate=ymd(new Date());
+let calendarDate=new Date();
+
+let currentFilter="all";
+
+
+function ymd(d){
+
+const y=d.getFullYear();
+
+const m=
+String(d.getMonth()+1)
+.padStart(2,"0");
+
+const day=
+String(d.getDate())
+.padStart(2,"0");
+
+return `${y}-${m}-${day}`;
+
+}
+
+
+function parseDate(str){
+
+const [y,m,d]=
+str.split("-").map(Number);
+
+return new Date(y,m-1,d);
+
+}
+
+
+function newDay(){
+
+return{
+
+top:["","",""],
+
+topDone:[
+false,
+false,
+false
+],
+
+tasks:[],
+
+memo:"",
+
+carry:""
+
+};
+
+}
+
 
 function loadDB(){
-  try{
-    db=JSON.parse(localStorage.getItem(DB_KEY))||{};
-  }catch{
-    db={};
-  }
 
-  if(!localStorage.getItem(DB_KEY)){
-    try{
-      const old=JSON.parse(localStorage.getItem(OLD_KEY));
-      if(old){
-        db[selectedDate]={
-          top:old.top||["","",""],
-          topDone:old.topDone||[false,false,false],
-          tasks:old.tasks||[],
-          memo:old.memo||"",
-          carry:old.tomorrow||""
-        };
-        saveDB();
-      }
-    }catch{}
-  }
+try{
+
+db=
+JSON.parse(
+localStorage.getItem(DB_KEY)
+)||{};
+
+}catch{
+
+db={};
+
 }
+
+
+if(
+!localStorage.getItem(DB_KEY)
+){
+
+try{
+
+const old=
+JSON.parse(
+localStorage.getItem(OLD_V2)
+);
+
+if(old){
+
+db=old;
+
+saveDB();
+
+}
+
+}catch{}
+
+}
+
+}
+
 
 function saveDB(){
-  localStorage.setItem(DB_KEY,JSON.stringify(db));
+
+localStorage.setItem(
+DB_KEY,
+JSON.stringify(db)
+);
+
 }
 
-function dayData(){
-  if(!db[selectedDate]) db[selectedDate]=newDay();
-  return db[selectedDate];
+
+function dayData(date=selectedDate){
+
+if(!db[date]){
+
+db[date]=newDay();
+
 }
 
-function dateObject(str){
-  const [y,m,d]=str.split("-").map(Number);
-  return new Date(y,m-1,d);
+return db[date];
+
 }
+
 
 function renderDate(){
-  const d=dateObject(selectedDate);
 
-  document.getElementById("dateText").textContent=
-    new Intl.DateTimeFormat("ja-JP",{
-      year:"numeric",
-      month:"long",
-      day:"numeric",
-      weekday:"short"
-    }).format(d);
+const d=
+parseDate(selectedDate);
 
-  document.getElementById("datePicker").value=selectedDate;
+document.getElementById(
+"dateText"
+).textContent=
+
+new Intl.DateTimeFormat(
+"ja-JP",
+{
+year:"numeric",
+month:"long",
+day:"numeric",
+weekday:"short"
 }
+).format(d);
+
+
+document.getElementById(
+"datePicker"
+).value=
+selectedDate;
+
+}
+
 
 function moveDay(amount){
-  const d=dateObject(selectedDate);
-  d.setDate(d.getDate()+amount);
-  selectedDate=ymd(d);
-  renderAll();
+
+const d=
+parseDate(selectedDate);
+
+d.setDate(
+d.getDate()+amount
+);
+
+selectedDate=
+ymd(d);
+
+calendarDate=
+new Date(
+d.getFullYear(),
+d.getMonth(),
+1
+);
+
+renderAll();
+
 }
+
 
 function goToday(){
-  selectedDate=ymd(new Date());
-  renderAll();
+
+const d=new Date();
+
+selectedDate=ymd(d);
+
+calendarDate=
+new Date(
+d.getFullYear(),
+d.getMonth(),
+1
+);
+
+renderAll();
+
 }
 
-document.getElementById("datePicker").addEventListener("change",e=>{
-  if(e.target.value){
-    selectedDate=e.target.value;
-    renderAll();
-  }
+
+document.getElementById(
+"datePicker"
+).addEventListener(
+"change",
+e=>{
+
+if(e.target.value){
+
+selectedDate=
+e.target.value;
+
+const d=
+parseDate(selectedDate);
+
+calendarDate=
+new Date(
+d.getFullYear(),
+d.getMonth(),
+1
+);
+
+renderAll();
+
+}
+
+}
+);
+
+
+/* カレンダー */
+
+function moveMonth(amount){
+
+calendarDate.setMonth(
+calendarDate.getMonth()+amount
+);
+
+renderCalendar();
+
+}
+
+
+function hasTasks(date){
+
+const d=db[date];
+
+if(!d) return false;
+
+return (
+d.tasks &&
+d.tasks.length>0
+);
+
+}
+
+
+function hasImportant(date){
+
+const d=db[date];
+
+if(!d) return false;
+
+return (
+d.tasks &&
+d.tasks.some(
+x=>x.important
+)
+);
+
+}
+
+
+function renderCalendar(){
+
+const box=
+document.getElementById(
+"calendar"
+);
+
+box.innerHTML="";
+
+
+const y=
+calendarDate.getFullYear();
+
+const m=
+calendarDate.getMonth();
+
+
+document.getElementById(
+"calendarTitle"
+).textContent=
+`${y}年 ${m+1}月`;
+
+
+[
+"日",
+"月",
+"火",
+"水",
+"木",
+"金",
+"土"
+].forEach(x=>{
+
+const w=
+document.createElement("div");
+
+w.className="week";
+
+w.textContent=x;
+
+box.append(w);
+
 });
 
+
+const first=
+new Date(y,m,1);
+
+const start=
+new Date(
+y,
+m,
+1-first.getDay()
+);
+
+
+for(let i=0;i<42;i++){
+
+const d=
+new Date(start);
+
+d.setDate(
+start.getDate()+i
+);
+
+const date=
+ymd(d);
+
+const btn=
+document.createElement(
+"button"
+);
+
+btn.className="day";
+
+
+if(
+d.getMonth()!==m
+){
+
+btn.classList.add(
+"other"
+);
+
+}
+
+
+if(
+date===ymd(new Date())
+){
+
+btn.classList.add(
+"today"
+);
+
+}
+
+
+if(
+date===selectedDate
+){
+
+btn.classList.add(
+"selected"
+);
+
+}
+
+
+const n=
+document.createElement(
+"div"
+);
+
+n.className=
+"dayNum";
+
+n.textContent=
+d.getDate();
+
+btn.append(n);
+
+
+if(
+hasTasks(date)
+){
+
+const dot=
+document.createElement(
+"div"
+);
+
+dot.className=
+"dot";
+
+if(
+hasImportant(date)
+){
+
+dot.classList.add(
+"importantDot"
+);
+
+}
+
+btn.append(dot);
+
+}
+
+
+btn.onclick=()=>{
+
+selectedDate=date;
+
+calendarDate=
+new Date(
+d.getFullYear(),
+d.getMonth(),
+1
+);
+
+renderAll();
+
+};
+
+
+box.append(btn);
+
+}
+
+}
+
+
+/* TOP3 */
+
 function renderTop(){
-  const data=dayData();
-  const box=document.getElementById("top3");
-  box.innerHTML="";
 
-  for(let i=0;i<3;i++){
-    const row=document.createElement("div");
-    row.className="topItem"+(data.topDone[i]?" done":"");
+const data=
+dayData();
 
-    const check=document.createElement("input");
-    check.type="checkbox";
-    check.checked=!!data.topDone[i];
+const box=
+document.getElementById(
+"top3"
+);
 
-    check.onchange=()=>{
-      data.topDone[i]=check.checked;
-      saveDB();
-      renderTop();
-    };
+box.innerHTML="";
 
-    const text=document.createElement("input");
-    text.type="text";
-    text.placeholder=`${i+1}. 必ずやること`;
-    text.value=data.top[i]||"";
 
-    text.oninput=()=>{
-      data.top[i]=text.value;
-      saveDB();
-    };
+for(let i=0;i<3;i++){
 
-    row.append(check,text);
-    box.append(row);
-  }
+const row=
+document.createElement(
+"div"
+);
+
+row.className=
+"topItem"+
+(
+data.topDone[i]
+?" done"
+:""
+);
+
+
+const check=
+document.createElement(
+"input"
+);
+
+check.type=
+"checkbox";
+
+check.checked=
+!!data.topDone[i];
+
+
+check.onchange=()=>{
+
+data.topDone[i]=
+check.checked;
+
+saveDB();
+
+renderTop();
+
+};
+
+
+const text=
+document.createElement(
+"input"
+);
+
+text.type=
+"text";
+
+text.placeholder=
+`${i+1}. 必ずやること`;
+
+text.value=
+data.top[i]||"";
+
+
+text.oninput=()=>{
+
+data.top[i]=
+text.value;
+
+saveDB();
+
+};
+
+
+row.append(
+check,
+text
+);
+
+box.append(row);
+
 }
 
-function halfHourTimes(){
-  const times=[];
-
-  for(let h=6;h<=23;h++){
-    times.push(`${String(h).padStart(2,"0")}:00`);
-    times.push(`${String(h).padStart(2,"0")}:30`);
-  }
-
-  return times;
 }
+
+
+/* 繰り返し予定 */
+
+function repeatApplies(
+task,
+targetDate
+){
+
+if(
+!task.repeat ||
+task.repeat==="none"
+){
+
+return false;
+
+}
+
+
+const original=
+parseDate(
+task.baseDate
+);
+
+const target=
+parseDate(
+targetDate
+);
+
+
+if(target<original){
+
+return false;
+
+}
+
+
+if(
+task.repeat==="daily"
+){
+
+return true;
+
+}
+
+
+if(
+task.repeat==="weekdays"
+){
+
+const day=
+target.getDay();
+
+return (
+day>=1 &&
+day<=5
+);
+
+}
+
+
+if(
+task.repeat==="weekly"
+){
+
+return (
+target.getDay()===
+original.getDay()
+);
+
+}
+
+
+return false;
+
+}
+
+
+function tasksForDate(date){
+
+const own=
+(
+db[date]?.tasks||[]
+).map(x=>({
+...x,
+virtual:false
+}));
+
+
+const repeated=[];
+
+
+Object.keys(db)
+.forEach(sourceDate=>{
+
+(db[sourceDate].tasks||[])
+.forEach(task=>{
+
+if(
+repeatApplies(
+task,
+date
+)
+){
+
+repeated.push({
+...task,
+virtual:true,
+sourceDate
+});
+
+}
+
+});
+
+});
+
+
+const ids=
+new Set(
+own.map(x=>x.id)
+);
+
+
+return [
+...own,
+...repeated.filter(
+x=>!ids.has(x.id)
+)
+];
+
+}
+
+
+/* timeline */
+
+function halfHours(){
+
+const arr=[];
+
+for(
+let h=6;
+h<=23;
+h++
+){
+
+arr.push(
+`${String(h).padStart(2,"0")}:00`
+);
+
+arr.push(
+`${String(h).padStart(2,"0")}:30`
+);
+
+}
+
+return arr;
+
+}
+
+
+function currentSlot(){
+
+const now=
+new Date();
+
+if(
+selectedDate!==
+ymd(now)
+){
+
+return null;
+
+}
+
+let h=
+now.getHours();
+
+let m=
+now.getMinutes()<30
+?0
+:30;
+
+return(
+`${String(h).padStart(2,"0")}:${m===0?"00":"30"}`
+);
+
+}
+
+
+function filterTask(task){
+
+if(
+currentFilter==="incomplete"
+){
+
+return !task.done;
+
+}
+
+if(
+currentFilter==="important"
+){
+
+return !!task.important;
+
+}
+
+return true;
+
+}
+
 
 function renderTimeline(){
-  const data=dayData();
-  const box=document.getElementById("timeline");
-  box.innerHTML="";
 
-  halfHourTimes().forEach(time=>{
-    const slot=document.createElement("div");
-    slot.className="slot";
+const box=
+document.getElementById(
+"timeline"
+);
 
-    const timeBox=document.createElement("div");
-    timeBox.className="slotTime";
-    timeBox.textContent=time;
+box.innerHTML="";
 
-    const body=document.createElement("div");
-    body.className="slotBody";
 
-    const tasks=data.tasks
-      .filter(t=>t.time===time)
-      .sort((a,b)=>a.id-b.id);
+const all=
+tasksForDate(
+selectedDate
+);
 
-    tasks.forEach(task=>{
-      const taskBox=document.createElement("div");
-      taskBox.className="task"+(task.done?" done":"");
 
-      const top=document.createElement("div");
-      top.className="taskTop";
+const current=
+currentSlot();
 
-      const check=document.createElement("input");
-      check.type="checkbox";
-      check.className="taskCheck";
-      check.checked=task.done;
 
-      check.onchange=()=>{
-        task.done=check.checked;
-        saveDB();
-        renderTimeline();
-      };
+halfHours()
+.forEach(time=>{
 
-      const title=document.createElement("div");
-      title.className="taskTitle";
-      title.textContent=task.title;
+const slot=
+document.createElement(
+"div"
+);
 
-      top.append(check,title);
+slot.className=
+"slot";
 
-      const note=document.createElement("div");
-      note.className="taskNote";
-      note.textContent=task.note||"";
 
-      const btns=document.createElement("div");
-      btns.className="taskButtons";
+if(time===current){
 
-      const edit=document.createElement("button");
-      edit.textContent="編集";
-      edit.onclick=()=>openTask(task);
+slot.classList.add(
+"current"
+);
 
-      const del=document.createElement("button");
-      del.textContent="削除";
-      del.className="delete";
-      del.onclick=()=>{
-        if(confirm("この予定を削除しますか？")){
-          data.tasks=data.tasks.filter(x=>x.id!==task.id);
-          db[selectedDate]=data;
-          saveDB();
-          renderTimeline();
-        }
-      };
-
-      btns.append(edit,del);
-      taskBox.append(top);
-
-      if(task.note) taskBox.append(note);
-
-      taskBox.append(btns);
-      body.append(taskBox);
-    });
-
-    const add=document.createElement("button");
-    add.className="slotEmpty";
-    add.textContent=tasks.length ? "＋ この時間に追加" : "＋ 予定";
-    add.onclick=()=>openTask(null,time);
-
-    body.append(add);
-    slot.append(timeBox,body);
-    box.append(slot);
-  });
 }
 
-const dialog=document.getElementById("taskDialog");
 
-function openTask(task=null,time=null){
-  document.getElementById("dialogTitle").textContent=
-    task ? "予定を編集" : "予定を追加";
+const timeBox=
+document.createElement(
+"div"
+);
 
-  document.getElementById("editId").value=
-    task ? task.id : "";
+timeBox.className=
+"slotTime";
 
-  document.getElementById("taskTime").value=
-    task ? task.time : (time||"09:00");
+timeBox.textContent=
+time;
 
-  document.getElementById("taskTitle").value=
-    task ? task.title : "";
 
-  document.getElementById("taskNote").value=
-    task ? (task.note||"") : "";
+if(time===current){
 
-  dialog.showModal();
+const badge=
+document.createElement(
+"div"
+);
+
+badge.className=
+"currentBadge";
+
+badge.textContent=
+"NOW";
+
+timeBox.append(badge);
+
 }
+
+
+const body=
+document.createElement(
+"div"
+);
+
+body.className=
+"slotBody";
+
+
+const tasks=
+all.filter(
+t=>
+t.time===time &&
+filterTask(t)
+);
+
+
+tasks.forEach(
+task=>{
+
+const t=
+document.createElement(
+"div"
+);
+
+t.className=
+"task"+
+(
+task.done
+?" done"
+:""
+)+
+(
+task.important
+?" important"
+:""
+);
+
+
+const top=
+document.createElement(
+"div"
+);
+
+top.className=
+"taskTop";
+
+
+const check=
+document.createElement(
+"input"
+);
+
+check.type=
+"checkbox";
+
+check.className=
+"taskCheck";
+
+check.checked=
+!!task.done;
+
+
+check.onchange=()=>{
+
+if(task.virtual){
+
+alert(
+"繰り返し予定の完了状態は元の予定で管理されます"
+);
+
+check.checked=
+task.done;
+
+return;
+
+}
+
+
+const data=
+dayData();
+
+const real=
+data.tasks.find(
+x=>x.id===task.id
+);
+
+if(real){
+
+real.done=
+check.checked;
+
+saveDB();
+
+renderTimeline();
+
+}
+
+};
+
+
+if(task.important){
+
+const star=
+document.createElement(
+"span"
+);
+
+star.className=
+"star";
+
+star.textContent=
+"⭐";
+
+top.append(star);
+
+}
+
+
+top.append(check);
+
+
+const title=
+document.createElement(
+"div"
+);
+
+title.className=
+"taskTitle";
+
+title.textContent=
+task.title;
+
+top.append(title);
+
+
+if(
+task.repeat &&
+task.repeat!=="none"
+){
+
+const badge=
+document.createElement(
+"span"
+);
+
+badge.className=
+"repeatBadge";
+
+badge.textContent=
+"🔁";
+
+top.append(badge);
+
+}
+
+
+t.append(top);
+
+
+if(task.note){
+
+const note=
+document.createElement(
+"div"
+);
+
+note.className=
+"taskNote";
+
+note.textContent=
+task.note;
+
+t.append(note);
+
+}
+
+
+const buttons=
+document.createElement(
+"div"
+);
+
+buttons.className=
+"taskButtons";
+
+
+const edit=
+document.createElement(
+"button"
+);
+
+edit.textContent=
+task.virtual
+?"元予定へ"
+:"編集";
+
+
+edit.onclick=()=>{
+
+if(task.virtual){
+
+selectedDate=
+task.sourceDate;
+
+const d=
+parseDate(
+selectedDate
+);
+
+calendarDate=
+new Date(
+d.getFullYear(),
+d.getMonth(),
+1
+);
+
+renderAll();
+
+setTimeout(
+()=>openTask(task),
+100
+);
+
+}else{
+
+openTask(task);
+
+}
+
+};
+
+
+const del=
+document.createElement(
+"button"
+);
+
+del.textContent=
+"削除";
+
+del.className=
+"delete";
+
+
+del.onclick=()=>{
+
+if(task.virtual){
+
+alert(
+"繰り返し予定は元の日付から削除してください"
+);
+
+return;
+
+}
+
+
+if(
+confirm(
+"この予定を削除しますか？"
+)
+){
+
+const data=
+dayData();
+
+data.tasks=
+data.tasks.filter(
+x=>x.id!==task.id
+);
+
+saveDB();
+
+renderAll();
+
+}
+
+};
+
+
+buttons.append(
+edit,
+del
+);
+
+t.append(buttons);
+
+body.append(t);
+
+});
+
+
+const add=
+document.createElement(
+"button"
+);
+
+add.className=
+"addSlot";
+
+add.textContent=
+tasks.length
+?"＋ この時間に追加"
+:"＋ 予定";
+
+add.onclick=()=>{
+
+openTask(
+null,
+time
+);
+
+};
+
+
+body.append(add);
+
+slot.append(
+timeBox,
+body
+);
+
+box.append(slot);
+
+});
+
+}
+
+
+/* filter */
+
+function setFilter(type){
+
+currentFilter=type;
+
+[
+"All",
+"Incomplete",
+"Important"
+].forEach(name=>{
+
+const el=
+document.getElementById(
+"filter"+name
+);
+
+el.classList.remove(
+"active"
+);
+
+});
+
+
+const map={
+all:"filterAll",
+incomplete:"filterIncomplete",
+important:"filterImportant"
+};
+
+document.getElementById(
+map[type]
+).classList.add(
+"active"
+);
+
+renderTimeline();
+
+}
+
+
+/* task dialog */
+
+const taskDialog=
+document.getElementById(
+"taskDialog"
+);
+
+
+function openTask(
+task=null,
+time=null
+){
+
+document.getElementById(
+"dialogTitle"
+).textContent=
+task
+?"予定を編集"
+:"予定を追加";
+
+
+document.getElementById(
+"editId"
+).value=
+task
+?task.id
+:"";
+
+
+document.getElementById(
+"taskTime"
+).value=
+task
+?task.time
+:(time||"09:00");
+
+
+document.getElementById(
+"taskTitle"
+).value=
+task
+?task.title
+:"";
+
+
+document.getElementById(
+"taskNote"
+).value=
+task
+?(task.note||"")
+:"";
+
+
+document.getElementById(
+"taskRepeat"
+).value=
+task
+?(task.repeat||"none")
+:"none";
+
+
+document.getElementById(
+"taskImportant"
+).checked=
+task
+?!!task.important
+:false;
+
+
+taskDialog.showModal();
+
+}
+
 
 function closeTask(){
-  dialog.close();
+
+taskDialog.close();
+
 }
+
 
 function saveTask(){
-  const data=dayData();
 
-  const id=document.getElementById("editId").value;
-  const time=document.getElementById("taskTime").value;
-  const title=document.getElementById("taskTitle").value.trim();
-  const note=document.getElementById("taskNote").value.trim();
+const data=
+dayData();
 
-  if(!title){
-    alert("やることを入力してください");
-    return;
-  }
+const id=
+document.getElementById(
+"editId"
+).value;
 
-  if(id){
-    const task=data.tasks.find(t=>String(t.id)===String(id));
+const time=
+document.getElementById(
+"taskTime"
+).value;
 
-    if(task){
-      task.time=time;
-      task.title=title;
-      task.note=note;
-    }
-  }else{
-    data.tasks.push({
-      id:Date.now(),
-      time,
-      title,
-      note,
-      done:false
-    });
-  }
+const title=
+document.getElementById(
+"taskTitle"
+).value.trim();
 
-  saveDB();
-  renderTimeline();
-  closeTask();
+const note=
+document.getElementById(
+"taskNote"
+).value.trim();
+
+const repeat=
+document.getElementById(
+"taskRepeat"
+).value;
+
+const important=
+document.getElementById(
+"taskImportant"
+).checked;
+
+
+if(!title){
+
+alert(
+"やることを入力してください"
+);
+
+return;
+
 }
 
-function bindTextareas(){
-  const data=dayData();
 
-  const memo=document.getElementById("memo");
-  const carry=document.getElementById("carry");
+if(id){
 
-  memo.value=data.memo||"";
-  carry.value=data.carry||"";
+const task=
+data.tasks.find(
+x=>
+String(x.id)===
+String(id)
+);
 
-  memo.oninput=()=>{
-    dayData().memo=memo.value;
-    saveDB();
-  };
+if(task){
 
-  carry.oninput=()=>{
-    dayData().carry=carry.value;
-    saveDB();
-  };
+task.time=time;
+
+task.title=title;
+
+task.note=note;
+
+task.repeat=repeat;
+
+task.important=
+important;
+
+task.baseDate=
+task.baseDate||
+selectedDate;
+
 }
 
-function tomorrowDate(){
-  const d=dateObject(selectedDate);
-  d.setDate(d.getDate()+1);
-  return ymd(d);
+}else{
+
+data.tasks.push({
+
+id:
+Date.now(),
+
+time,
+
+title,
+
+note,
+
+done:false,
+
+repeat,
+
+important,
+
+baseDate:
+selectedDate
+
+});
+
 }
+
+
+saveDB();
+
+renderAll();
+
+closeTask();
+
+}
+
+
+/* memo */
+
+function bindMemo(){
+
+const data=
+dayData();
+
+const memo=
+document.getElementById(
+"memo"
+);
+
+const carry=
+document.getElementById(
+"carry"
+);
+
+
+memo.value=
+data.memo||"";
+
+carry.value=
+data.carry||"";
+
+
+memo.oninput=()=>{
+
+dayData().memo=
+memo.value;
+
+saveDB();
+
+};
+
+
+carry.oninput=()=>{
+
+dayData().carry=
+carry.value;
+
+saveDB();
+
+};
+
+}
+
+
+/* carry */
+
+function tomorrow(){
+
+const d=
+parseDate(
+selectedDate
+);
+
+d.setDate(
+d.getDate()+1
+);
+
+return ymd(d);
+
+}
+
 
 function copyCarryToTomorrow(){
-  const text=dayData().carry.trim();
 
-  if(!text){
-    alert("持ち越し欄が空です");
-    return;
-  }
+const text=
+dayData().carry.trim();
 
-  const next=tomorrowDate();
+if(!text){
 
-  if(!db[next]) db[next]=newDay();
+alert(
+"持ち越し欄が空です"
+);
 
-  db[next].memo=
-    (db[next].memo ? db[next].memo+"\n\n" : "")+
-    "【前日からの持ち越し】\n"+
-    text;
+return;
 
-  saveDB();
-
-  alert("翌日のメモへコピーしました");
 }
+
+
+const next=
+tomorrow();
+
+const d=
+dayData(next);
+
+
+d.memo=
+(
+d.memo
+?d.memo+"\n\n"
+:""
+)+
+"【前日からの持ち越し】\n"+
+text;
+
+
+saveDB();
+
+alert(
+"翌日のメモへコピーしました"
+);
+
+}
+
 
 function copyIncompleteToTomorrow(){
-  const current=dayData();
 
-  const incomplete=current.tasks.filter(t=>!t.done);
+const data=
+dayData();
 
-  if(!incomplete.length){
-    alert("未完了の予定はありません");
-    return;
-  }
+const incomplete=
+data.tasks.filter(
+x=>
+!x.done &&
+(
+!x.repeat ||
+x.repeat==="none"
+)
+);
 
-  const next=tomorrowDate();
 
-  if(!db[next]) db[next]=newDay();
+if(
+!incomplete.length
+){
 
-  incomplete.forEach(t=>{
-    db[next].tasks.push({
-      id:Date.now()+Math.random(),
-      time:t.time,
-      title:t.title,
-      note:t.note,
-      done:false
-    });
-  });
+alert(
+"未完了予定はありません"
+);
 
-  saveDB();
+return;
 
-  alert(`${incomplete.length}件を翌日にコピーしました`);
 }
+
+
+const next=
+tomorrow();
+
+const d=
+dayData(next);
+
+
+incomplete.forEach(
+x=>{
+
+d.tasks.push({
+
+...x,
+
+id:
+Date.now()+
+Math.random(),
+
+done:false,
+
+baseDate:next
+
+});
+
+});
+
+
+saveDB();
+
+alert(
+`${incomplete.length}件を翌日にコピーしました`
+);
+
+}
+
+
+/* reset */
 
 function resetDay(){
-  if(confirm("この日の内容をすべて削除しますか？")){
-    db[selectedDate]=newDay();
-    saveDB();
-    renderAll();
-  }
+
+if(
+confirm(
+"この日の内容をすべて削除しますか？"
+)
+){
+
+db[selectedDate]=
+newDay();
+
+saveDB();
+
+renderAll();
+
 }
+
+}
+
+
+/* render */
 
 function renderAll(){
-  renderDate();
-  renderTop();
-  renderTimeline();
-  bindTextareas();
+
+renderDate();
+
+renderCalendar();
+
+renderTop();
+
+renderTimeline();
+
+bindMemo();
+
 }
 
+
 loadDB();
+
 renderAll();
+
+
+/* 現在時刻の表示更新 */
+
+setInterval(
+()=>{
+
+renderTimeline();
+
+},
+60000
+);
+
 </script>
 
 </body>
